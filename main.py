@@ -48,20 +48,24 @@ class Ui_MainWindow(QMainWindow, QTabWidget):
         self.pathlineEdit.setText(self.file_path)
 
     def start(self):
-        xmindHandler = HandleXmind(self.file_path)
-        current_dir=os.path.dirname(self.file_path)
-        xmindHandler.handle_xmind()
-        fileName = xmindHandler.sheetName
-        filePath = f"{current_dir}/{fileName}"
-        maxModule = xmindHandler.maxModule
-        data_list = xmindHandler.case_list
-        excelHandler = HandleExcel(fileName, filePath)
-        excelHandler.generate_title(maxModule)
-        status=excelHandler.write_data(data_list)
-        if status:
-            self.messagebox.information(self, "Message", "文件转换完成", QMessageBox.Ok)
+
+        if  not self.file_path.endswith("xmind"):
+            self.messagebox.information(self, "Message", "请选择正确的Xmind文件", QMessageBox.Ok)
         else:
-            self.messagebox.information(self, "Message", "文件转换失败，请检查xmind格式是否符合标准", QMessageBox.Ok)
+            xmindHandler = HandleXmind(self.file_path)
+            current_dir=os.path.dirname(self.file_path)
+            xmindHandler.handle_xmind()
+            fileName = xmindHandler.sheetName
+            filePath = f"{current_dir}/{fileName}"
+            maxModule = xmindHandler.maxModule
+            data_list = xmindHandler.case_list
+            excelHandler = HandleExcel(fileName, filePath)
+            excelHandler.generate_title(maxModule)
+            status=excelHandler.write_data(data_list)
+            if status:
+                self.messagebox.information(self, "Message", "文件转换完成", QMessageBox.Ok)
+            else:
+                self.messagebox.information(self, "Message", "文件转换失败，请检查xmind格式是否符合标准", QMessageBox.Ok)
 
 
 
