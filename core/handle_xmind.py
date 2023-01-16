@@ -72,7 +72,7 @@ class HandleXmind():
 
         # 如果发现topics里面的内容只有一级包含标题的内容时 则需要检查case前面是否已经有了
         # 当出现标题在节点中时，该节点也不一定是最后一个节点，也许是case后面还有case
-        if "标题" in dict_data['title']:
+        if "标题" and "预期" in dict_data['title']:
             # 如果case的字典里已经有case的字段了，说明这个是case后面的case
             if list(dict_case.keys()).__contains__("title"):
                 # 先复制之前的case
