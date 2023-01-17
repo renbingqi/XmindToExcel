@@ -104,7 +104,7 @@ class HandleXmind():
             maker = dict_data['makers']
             if maker == ['task-done']:
                 dict_case['case_status'] = "PASS"
-            elif maker == ['symbol-attention']:
+            elif maker == ['symbol-attention'] or maker == ['symbol-exclam']:
                 dict_case['case_status'] = "FAIL"
             else:
                 dict_case['case_status'] = "N/A"
@@ -158,7 +158,7 @@ class HandleXmind():
 
 
 if __name__ == '__main__':
-    xmind_file = "Demo.xmind"
+    xmind_file = "/Users/rexren/Desktop/Xmind2Excel/XmindToExcel/core/Test.xmind"
     xmind_handler = HandleXmind(xmind_file)
     xmind_handler.handle_xmind()
     for item in xmind_handler.case_list:
