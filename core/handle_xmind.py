@@ -127,28 +127,30 @@ class HandleXmind():
             self.maxModule = module
 
     def case_format(self,dict_case,case):
-        if "前置" in case:
-            indexPreconditions=case.index("前置")
-            indexTestStep = case.index("步骤")
-            indexExpected_Result = case.index("预期")
-            title = case[3:indexPreconditions]
-            Preconditions = case[indexPreconditions + 3:indexTestStep]
-            TestStep = case[indexTestStep + 3:indexExpected_Result]
-            ExpectedResult = case[indexExpected_Result + 3:]
-            dict_case["title"] = title.rstrip()
-            dict_case["preconditions"] = Preconditions.rstrip()
-            dict_case["TestStep"] = TestStep.rstrip()
-            dict_case["ExpectedResult"] = ExpectedResult.rstrip()
-        else:
-            indexTestStep = case.index("步骤")
-            indexExpected_Result = case.index("预期")
-            title = case[3:indexTestStep]
-            TestStep = case[indexTestStep + 3:indexExpected_Result]
-            ExpectedResult = case[indexExpected_Result + 3:]
-            dict_case["title"] = title.rstrip()
-            dict_case["preconditions"] = ''
-            dict_case["TestStep"] = TestStep.rstrip()
-            dict_case["ExpectedResult"] = ExpectedResult.rstrip()
+        if "：" in case or ":" in case :
+            replace_case=case.replace("：",":")
+            if "前置:" in replace_case:
+                indexPreconditions=replace_case.index("前置:")
+                indexTestStep = replace_case.index("步骤:")
+                indexExpected_Result = replace_case.index("预期:")
+                title = replace_case[3:indexPreconditions]
+                Preconditions = replace_case[indexPreconditions + 3:indexTestStep]
+                TestStep = replace_case[indexTestStep + 3:indexExpected_Result]
+                ExpectedResult = replace_case[indexExpected_Result + 3:]
+                dict_case["title"] = title.rstrip()
+                dict_case["preconditions"] = Preconditions.rstrip()
+                dict_case["TestStep"] = TestStep.rstrip()
+                dict_case["ExpectedResult"] = ExpectedResult.rstrip()
+            else:
+                indexTestStep = replace_case.index("步骤:")
+                indexExpected_Result = replace_case.index("预期:")
+                title = replace_case[3:indexTestStep]
+                TestStep = replace_case[indexTestStep + 3:indexExpected_Result]
+                ExpectedResult = replace_case[indexExpected_Result + 3:]
+                dict_case["title"] = title.rstrip()
+                dict_case["preconditions"] = ''
+                dict_case["TestStep"] = TestStep.rstrip()
+                dict_case["ExpectedResult"] = ExpectedResult.rstrip()
 
 
 
@@ -156,7 +158,7 @@ class HandleXmind():
 
 
 if __name__ == '__main__':
-    xmind_file = "Server SDK.xmind"
+    xmind_file = "Demo.xmind"
     xmind_handler = HandleXmind(xmind_file)
     xmind_handler.handle_xmind()
     for item in xmind_handler.case_list:

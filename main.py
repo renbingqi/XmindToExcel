@@ -18,7 +18,7 @@ class Ui_MainWindow(QMainWindow, QTabWidget):
         self.initUI()
 
     def initUI(self):
-        self.resize(450, 300)
+        self.resize(500, 300)
         self.label1 = QLabel(
             '<html><head/><body><p><span style=" color:#ff0000;">测试用例Xmind思维导图转Excel工具</span></p></body></html>）',
             self)
@@ -28,10 +28,10 @@ class Ui_MainWindow(QMainWindow, QTabWidget):
         self.cblabel.setGeometry(20, 70, 179, 22)
         # 输入框
         self.pathlineEdit=QLineEdit(self)
-        self.pathlineEdit .setGeometry(140, 70, 179, 22)
+        self.pathlineEdit .setGeometry(150, 70, 179, 22)
         # 选择xmind文件按钮
         self.selectButton=QPushButton("打开",self)
-        self.selectButton.setGeometry(330, 65, 70, 30)
+        self.selectButton.setGeometry(350, 65, 70, 30)
         self.selectButton.clicked.connect(self.select_file)
         #启动按钮
         self.startButton = QPushButton("开始转换", self)
