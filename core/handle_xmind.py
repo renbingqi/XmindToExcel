@@ -32,18 +32,18 @@ class HandleXmind():
         else:
             for i in range(len(data)):
                 if i == 0:
-                    self.get_title_data(dict_case, data[i])
+                    self.get_title_data(dic.copy(), data[i])
                 else:
-                    new_dict_case = {}
                     # 如果第一级节点包含了标签说明是我们想要的节点
                     if list(data[i].keys()).__contains__("makers"):
                         # 如果该节点包含 1 标记说明新的1级模块，此时不需要复制之前的case
                         if data[i]['makers'] == ['priority-1']:
-                            pass
+                            new_dict_case = {}
+                            self.get_title_data(new_dict_case, data[i])
                         # 如果该节点包含标签但不是 1，比如说 2，3，4 说明之前已经有出现过1级标签了，此时需要复制之前的case
                         else:
                             new_dict_case = dict_case.copy()
-                        self.get_title_data(new_dict_case, data[i])
+                            self.get_title_data(new_dict_case, data[i])
                     # 如果是case节点也是我们想要的
                     elif "标题" in data[i]['title']:
                         new_dict_case = dict_case.copy()
@@ -52,32 +52,29 @@ class HandleXmind():
                     else:
                         # 说明还有下一级节点,就直接递归
                         if list(data[i].keys()).__contains__("topics"):
+                            new_dict_case = dict_case.copy()
                             self.get_all_topic_data(data[i]['topics'], new_dict_case)
                         # 如果没有下一级节点了，说明已经是最后的节点了，则把数据放到列表中
 
     def get_title_data(self, dict_case, dict_data):
-        if list(dict_data.keys()).__contains__("makers"):
-            if dict_data['makers'] == ['priority-1']:
-                dict_case['module-1'] = dict_data['title']
-                self.check_max_module(1)
-            elif dict_data['makers'] == ['priority-2']:
-                dict_case['module-2'] = dict_data['title']
-                self.check_max_module(2)
-            elif dict_data['makers'] == ['priority-3']:
-                dict_case['module-3'] = dict_data['title']
-                self.check_max_module(3)
-            elif dict_data['makers'] == ['priority-4']:
-                dict_case['module-4'] = dict_data['title']
-                self.check_max_module(4)
+        if list(dict_case.keys()).__contains__("title"):
+            # 先复制之前的case
+            new_dict_case = dict_case.copy()
+            if list(dict_data.keys()).__contains__("makers"):
+                if dict_data['makers'] == ['priority-1']:
+                    new_dict_case['module-1'] = dict_data['title']
+                    self.check_max_module(1)
+                elif dict_data['makers'] == ['priority-2']:
+                    new_dict_case['module-2'] = dict_data['title']
+                    self.check_max_module(2)
+                elif dict_data['makers'] == ['priority-3']:
+                    new_dict_case['module-3'] = dict_data['title']
+                    self.check_max_module(3)
+                elif dict_data['makers'] == ['priority-4']:
+                    new_dict_case['module-4'] = dict_data['title']
+                    self.check_max_module(4)
 
-        # 如果发现topics里面的内容只有一级包含标题的内容时 则需要检查case前面是否已经有了
-        # 当出现标题在节点中时，该节点也不一定是最后一个节点，也许是case后面还有case
-        if "标题" and "预期" in dict_data['title']:
-            # 如果case的字典里已经有case的字段了，说明这个是case后面的case
-            if list(dict_case.keys()).__contains__("title"):
-                # 先复制之前的case
-                new_dict_case = dict_case.copy()
-                # 再把case字段的值替换掉
+            if "标题" and "预期" in dict_data['title']:
                 case = dict_data['title']
                 self.case_format(new_dict_case,case)
                 # 设置case的状态
@@ -85,19 +82,53 @@ class HandleXmind():
                 # 提取case的note状态
                 self.get_case_note_labels(new_dict_case, dict_data)
                 self.case_list.append(new_dict_case)
-            else:
-                case = dict_data['title']
-                self.case_format(dict_case, case)
-                # 检查这个case中是否有makers标记并设置case的状态
-                self.set_case_status(dict_case, dict_data)
-                # 检查这个case中是否有note标记 有的话把note提取出来
-                self.get_case_note_labels(dict_case,dict_data)
-                # 先把前面的case加入到case列表中
-                self.case_list.append(dict_case)
-        # 说明还有下一级节点,就直接递归
-        if list(dict_data.keys()).__contains__("topics"):
-            self.get_all_topic_data(dict_data['topics'], dict_case)
-        # 如果没有下一级节点了，说明已经是最后的节点了，则把数据放到列表中
+
+            # 说明还有下一级节点,就直接递归
+            if list(dict_data.keys()).__contains__("topics"):
+                self.get_all_topic_data(dict_data['topics'], new_dict_case)
+        else:
+            if list(dict_data.keys()).__contains__("makers"):
+                if dict_data['makers'] == ['priority-1']:
+                    dict_case['module-1'] = dict_data['title']
+                    self.check_max_module(1)
+                elif dict_data['makers'] == ['priority-2']:
+                    dict_case['module-2'] = dict_data['title']
+                    self.check_max_module(2)
+                elif dict_data['makers'] == ['priority-3']:
+                    dict_case['module-3'] = dict_data['title']
+                    self.check_max_module(3)
+                elif dict_data['makers'] == ['priority-4']:
+                    dict_case['module-4'] = dict_data['title']
+                    self.check_max_module(4)
+
+            # 如果发现topics里面的内容只有一级包含标题的内容时 则需要检查case前面是否已经有了
+            # 当出现标题在节点中时，该节点也不一定是最后一个节点，也许是case后面还有case
+            if "标题" and "预期" in dict_data['title']:
+                # 如果case的字典里已经有case的字段了，说明这个是case后面的case
+                if list(dict_case.keys()).__contains__("title"):
+                    # 先复制之前的case
+                    new_dict_case = dict_case.copy()
+                    # 再把case字段的值替换掉
+                    case = dict_data['title']
+                    self.case_format(new_dict_case,case)
+                    # 设置case的状态
+                    self.set_case_status(new_dict_case, dict_data)
+                    # 提取case的note状态
+                    self.get_case_note_labels(new_dict_case, dict_data)
+                    self.case_list.append(new_dict_case)
+                else:
+                    case = dict_data['title']
+                    self.case_format(dict_case, case)
+                    # 检查这个case中是否有makers标记并设置case的状态
+                    self.set_case_status(dict_case, dict_data)
+                    # 检查这个case中是否有note标记 有的话把note提取出来
+                    self.get_case_note_labels(dict_case,dict_data)
+                    # 先把前面的case加入到case列表中
+                    self.case_list.append(dict_case)
+            # 说明还有下一级节点,就直接递归
+            if list(dict_data.keys()).__contains__("topics"):
+                self.get_all_topic_data(dict_data['topics'], dict_case)
+            # 如果没有下一级节点了，说明已经是最后的节点了，则把数据放到列表中
 
     def set_case_status(self, dict_case, dict_data):
         if list(dict_data.keys()).__contains__("makers"):
@@ -158,7 +189,7 @@ class HandleXmind():
 
 
 if __name__ == '__main__':
-    xmind_file = "/Users/rexren/Desktop/Xmind2Excel/XmindToExcel/core/Test.xmind"
+    xmind_file = "/Users/rexren/Desktop/Xmind2Excel/XmindToExcel/1.5新增Data Analytics_20230130.xmind"
     xmind_handler = HandleXmind(xmind_file)
     xmind_handler.handle_xmind()
     for item in xmind_handler.case_list:
