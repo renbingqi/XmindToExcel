@@ -18,7 +18,7 @@ class HandleExcel():
         for item in range(maxModule):
             module = "Module-"+str(item + 1)
             title_list.append(module)
-        title_list+=["Test Item","Preconditions","Test Step","Expected Result","Result","Note"]
+        title_list+=["Test Item","Preconditions","Test Step","Expected Result","Result","Regression","Note"]
         # 将生成的标题写入到excel中
         for i in range(len(title_list)):
             # 标题在第一行，所以行号都固定为0，列号对应标题列表的索引值
@@ -32,11 +32,12 @@ class HandleExcel():
                 self.case_demo['ExpectedResult']=i
             elif title_list[i] == "Result":
                 self.case_demo['case_status']=i
+            elif title_list[i] == "Regression":
+                self.case_demo['regression']=i
             elif title_list[i] == "Note":
                 self.case_demo['note']=i
             else:
                 self.case_demo[title_list[i].lower()] = i
-        print()
         self.workbook.save(f"{self.filePath}.xls")
     def write_data(self,data_list):
         try:
